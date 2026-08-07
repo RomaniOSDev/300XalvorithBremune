@@ -29,8 +29,13 @@ struct SunDialView: View {
     var progress: Double
     var sunriseLabel: String
     var sunsetLabel: String
+    var size: CGFloat = 240
 
     var body: some View {
+        let tickRadius = size * 0.45
+        let iconSize = size * 0.22
+        let ringPadding = size * 0.07
+
         ZStack {
             Circle()
                 .fill(
@@ -38,26 +43,26 @@ struct SunDialView: View {
                         colors: [Color("AppSurface"), Color("AppBackground")],
                         center: .center,
                         startRadius: 10,
-                        endRadius: 140
+                        endRadius: size * 0.54
                     )
                 )
                 .shadow(color: Color("AppPrimary").opacity(0.35), radius: 18, x: 0, y: 8)
 
-            NeonProgressRing(progress: progress, lineWidth: 16)
-                .padding(18)
+            NeonProgressRing(progress: progress, lineWidth: max(12, size * 0.06))
+                .padding(ringPadding)
 
             ForEach(0..<12, id: \.self) { tick in
                 Capsule()
                     .fill(Color("AppTextSecondary").opacity(0.45))
                     .frame(width: 2, height: tick % 3 == 0 ? 14 : 8)
-                    .offset(y: -118)
+                    .offset(y: -tickRadius)
                     .rotationEffect(.degrees(Double(tick) * 30))
             }
 
             Image("sunIcon")
                 .resizable()
                 .scaledToFit()
-                .frame(width: 56, height: 56)
+                .frame(width: iconSize, height: iconSize)
                 .shadow(color: Color("AppAccent").opacity(0.6), radius: 12)
 
             VStack(spacing: 4) {
@@ -71,11 +76,11 @@ struct SunDialView: View {
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(Color("AppTextSecondary"))
                 }
-                .padding(.horizontal, 28)
-                .padding(.bottom, 22)
+                .padding(.horizontal, size * 0.11)
+                .padding(.bottom, size * 0.08)
             }
         }
-        .frame(width: 260, height: 260)
+        .frame(width: size, height: size)
     }
 }
 

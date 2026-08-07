@@ -14,56 +14,60 @@ struct SunriseSunsetView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 0) {
-                    heroHeader
+            GeometryReader { geo in
+                let dialSize = min(240, max(180, min(geo.size.width - 48, geo.size.height * 0.32)))
 
-                    VStack(spacing: 20) {
-                        locationChip
-                        dateNavigator
-                        sunDialSection
-                        timesRow
-                        DaylightDeltaCard(
-                            delta: SolarCalculator.daylightDelta(
-                                for: viewModel.selectedDate,
+                ScrollView {
+                    VStack(spacing: 0) {
+                        heroHeader
+
+                        VStack(spacing: 18) {
+                            locationChip
+                            dateNavigator
+                            sunDialSection(size: dialSize)
+                            timesRow
+                            DaylightDeltaCard(
+                                delta: SolarCalculator.daylightDelta(
+                                    for: viewModel.selectedDate,
+                                    latitude: store.selectedLatitude,
+                                    longitude: store.selectedLongitude
+                                )
+                            )
+                            GoldenBlueHourCard(
+                                latitude: store.selectedLatitude,
+                                longitude: store.selectedLongitude,
+                                date: viewModel.selectedDate
+                            )
+                            OutdoorPlannerCard(
+                                slots: SolarCalculator.outdoorPlannerSlots(
+                                    for: viewModel.selectedDate,
+                                    latitude: store.selectedLatitude,
+                                    longitude: store.selectedLongitude
+                                )
+                            )
+                            ActivityPresetsCard(
+                                date: viewModel.selectedDate,
                                 latitude: store.selectedLatitude,
                                 longitude: store.selectedLongitude
                             )
-                        )
-                        GoldenBlueHourCard(
-                            latitude: store.selectedLatitude,
-                            longitude: store.selectedLongitude,
-                            date: viewModel.selectedDate
-                        )
-                        OutdoorPlannerCard(
-                            slots: SolarCalculator.outdoorPlannerSlots(
-                                for: viewModel.selectedDate,
-                                latitude: store.selectedLatitude,
-                                longitude: store.selectedLongitude
+                            SolarEventsCard(
+                                events: SolarCalculator.upcomingSolarEvents(
+                                    from: Date(),
+                                    latitude: store.selectedLatitude
+                                ),
+                                polarNote: SolarCalculator.polarStatus(
+                                    for: viewModel.selectedDate,
+                                    latitude: store.selectedLatitude,
+                                    longitude: store.selectedLongitude
+                                )
                             )
-                        )
-                        ActivityPresetsCard(
-                            date: viewModel.selectedDate,
-                            latitude: store.selectedLatitude,
-                            longitude: store.selectedLongitude
-                        )
-                        SolarEventsCard(
-                            events: SolarCalculator.upcomingSolarEvents(
-                                from: Date(),
-                                latitude: store.selectedLatitude
-                            ),
-                            polarNote: SolarCalculator.polarStatus(
-                                for: viewModel.selectedDate,
-                                latitude: store.selectedLatitude,
-                                longitude: store.selectedLongitude
-                            )
-                        )
-                        alertsButton
-                        emptyGuidance
+                            alertsButton
+                            emptyGuidance
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.top, 16)
+                        .padding(.bottom, AppLayout.tabContentBottomPadding)
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 16)
-                    .padding(.bottom, 120)
                 }
             }
             .appScreenBackground()
@@ -173,16 +177,17 @@ struct SunriseSunsetView: View {
         }
     }
 
-    private var sunDialSection: some View {
+    private func sunDialSection(size: CGFloat) -> some View {
         TimelineView(.periodic(from: .now, by: scenePhase == .active ? 60 : 3600)) { timeline in
             let snapshot = dialSnapshot(at: timeline.date)
             SunDialView(
                 progress: snapshot.progress,
                 sunriseLabel: snapshot.sunrise,
-                sunsetLabel: snapshot.sunset
+                sunsetLabel: snapshot.sunset,
+                size: size
             )
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 8)
+            .padding(.vertical, 4)
         }
     }
 
@@ -209,7 +214,7 @@ struct SunriseSunsetView: View {
     }
 
     private var timesRow: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 10) {
             timeCard(title: "Sunrise", value: viewModel.sunriseText, icon: "sunrise.fill")
             timeCard(title: "Sunset", value: viewModel.sunsetText, icon: "sunset.fill")
             timeCard(title: "Daylight", value: viewModel.daylightText, icon: "sun.max.fill")
@@ -217,25 +222,32 @@ struct SunriseSunsetView: View {
     }
 
     private func timeCard(title: String, value: String, icon: String) -> some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 6) {
             Image(systemName: icon)
+                .font(.body)
                 .foregroundStyle(Color("AppAccent"))
             Text(title)
-                .font(.caption)
+                .font(.caption2.weight(.medium))
                 .foregroundStyle(Color("AppTextSecondary"))
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
             Text(value)
-                .font(.title3.bold())
+                .font(.subheadline.bold())
                 .foregroundStyle(Color("AppTextPrimary"))
                 .lineLimit(1)
-                .minimumScaleFactor(0.7)
+                .minimumScaleFactor(0.65)
+                .padding(.horizontal, 2)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 14)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 4)
         .background(
             RoundedRectangle(cornerRadius: 14)
                 .fill(Color("AppSurface"))
                 .shadow(color: Color("AppPrimary").opacity(0.2), radius: 8, y: 4)
         )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title), \(value)")
     }
 
     private var alertsButton: some View {

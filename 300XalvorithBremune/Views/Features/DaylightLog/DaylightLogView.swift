@@ -63,7 +63,7 @@ struct DaylightLogView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
-            .padding(.bottom, 100)
+            .padding(.bottom, AppLayout.tabContentBottomPadding)
         }
         .dismissKeyboardOnTap()
         .sheet(isPresented: $showAdd) {

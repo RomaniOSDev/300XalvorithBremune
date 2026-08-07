@@ -37,7 +37,7 @@ struct GlassTabBar: View {
                         selected = tab
                     }
                 } label: {
-                    VStack(spacing: 6) {
+                    VStack(spacing: 4) {
                         Image(systemName: tab.icon)
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundStyle(selected == tab ? Color("AppPrimary") : Color("AppTextSecondary"))
@@ -49,19 +49,20 @@ struct GlassTabBar: View {
                             .minimumScaleFactor(0.7)
                         Circle()
                             .fill(selected == tab ? Color("AppAccent") : Color.clear)
-                            .frame(width: 6, height: 6)
+                            .frame(width: 5, height: 5)
                             .shadow(color: selected == tab ? Color("AppAccent").opacity(0.8) : .clear, radius: 4)
                     }
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
+                    .padding(.vertical, 8)
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(tab.title)
             }
         }
         .padding(.horizontal, 8)
-        .padding(.top, 6)
-        .padding(.bottom, 10)
+        .padding(.top, 8)
+        .padding(.bottom, 8)
         .background(
             RoundedRectangle(cornerRadius: 28)
                 .fill(Color("AppSurface").opacity(0.92))
@@ -79,7 +80,8 @@ struct GlassTabBar: View {
                 .shadow(color: Color.black.opacity(0.35), radius: 16, y: -2)
         )
         .padding(.horizontal, 14)
-        .padding(.bottom, 8)
+        .padding(.top, 6)
+        .padding(.bottom, 4)
     }
 }
 
@@ -89,7 +91,7 @@ struct MainTabView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        ZStack(alignment: .bottom) {
+        ZStack {
             Group {
                 switch selected {
                 case .sun:
@@ -104,13 +106,14 @@ struct MainTabView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            GlassTabBar(selected: $selected)
-
             AchievementBannerOverlay(
                 achievementId: $store.pendingAchievementBanner,
                 definitions: AchievementDef.all
             )
             .padding(.top, 48)
+        }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            GlassTabBar(selected: $selected)
         }
         .ignoresSafeArea(.keyboard)
         .dismissKeyboardOnTap()

@@ -304,7 +304,7 @@ struct LocationCompareView: View {
                 }
             }
             .padding(16)
-            .padding(.bottom, 110)
+            .padding(.bottom, AppLayout.tabContentBottomPadding)
         }
         .dismissKeyboardOnTap()
     }
@@ -492,7 +492,7 @@ struct LightDiaryView: View {
                 }
             }
             .padding(16)
-            .padding(.bottom, 110)
+            .padding(.bottom, AppLayout.tabContentBottomPadding)
         }
         .dismissKeyboardOnTap()
     }

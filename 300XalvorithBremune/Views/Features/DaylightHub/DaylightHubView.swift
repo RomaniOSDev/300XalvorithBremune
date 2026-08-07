@@ -31,6 +31,7 @@ struct DaylightHubView: View {
                         LightDiaryView()
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .appScreenBackground()
             .dismissKeyboardOnTap()

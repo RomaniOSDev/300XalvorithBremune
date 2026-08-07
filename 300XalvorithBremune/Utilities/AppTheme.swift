@@ -73,6 +73,11 @@ struct AppScreenBackground: ViewModifier {
     }
 }
 
+enum AppLayout {
+    /// Extra space above the tab bar after `safeAreaInset` reserves its height.
+    static let tabContentBottomPadding: CGFloat = 24
+}
+
 extension View {
     func appScreenBackground() -> some View {
         modifier(AppScreenBackground())

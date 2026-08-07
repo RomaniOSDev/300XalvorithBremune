@@ -22,7 +22,7 @@ struct AchievementsView: View {
                         }
                     }
                     .padding(.horizontal, 16)
-                    .padding(.bottom, 120)
+                    .padding(.bottom, AppLayout.tabContentBottomPadding)
                 }
             }
             .appScreenBackground()
