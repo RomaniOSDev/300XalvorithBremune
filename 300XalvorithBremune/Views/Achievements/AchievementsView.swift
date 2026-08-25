@@ -22,8 +22,8 @@ struct AchievementsView: View {
                         }
                     }
                     .padding(.horizontal, 16)
-                    .padding(.bottom, AppLayout.tabContentBottomPadding)
                 }
+                .padding(.bottom, AppLayout.tabContentBottomPadding)
             }
             .appScreenBackground()
             .dismissKeyboardOnTap()

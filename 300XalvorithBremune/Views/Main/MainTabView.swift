@@ -91,7 +91,7 @@ struct MainTabView: View {
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottom) {
             Group {
                 switch selected {
                 case .sun:
@@ -106,14 +106,15 @@ struct MainTabView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
+            GlassTabBar(selected: $selected)
+
             AchievementBannerOverlay(
                 achievementId: $store.pendingAchievementBanner,
                 definitions: AchievementDef.all
             )
             .padding(.top, 48)
-        }
-        .safeAreaInset(edge: .bottom, spacing: 0) {
-            GlassTabBar(selected: $selected)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .allowsHitTesting(false)
         }
         .ignoresSafeArea(.keyboard)
         .dismissKeyboardOnTap()
